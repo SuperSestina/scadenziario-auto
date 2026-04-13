@@ -59,13 +59,20 @@ def register():
 
     return """
     <h2>Registrazione</h2>
+
     <form method="post">
         <input name="name" placeholder="Nome utente">
         <input name="email" placeholder="Email">
         <input name="password" type="password" placeholder="Password">
         <button>Registrati</button>
     </form>
+
+    <hr>
+
+    <p>Hai già un account?</p>
+    <a href="/login">Vai al Login</a>
     """
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -84,12 +91,19 @@ def login():
 
     return """
     <h2>Login</h2>
+
     <form method="post">
         <input name="email" placeholder="Email">
         <input name="password" type="password" placeholder="Password">
         <button>Login</button>
     </form>
+
+    <hr>
+
+    <p>Non hai un account?</p>
+    <a href="/register">Registrati</a>
     """
+
 @app.route("/logout")
 def logout():
     session.clear()
