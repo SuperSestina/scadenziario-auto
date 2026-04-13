@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scadenziario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>🚗 Benvenuto {{ name }}</h2>
+        <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+    </div>
+
+    <hr>
+
+    <!-- ALERT -->
+    <h4>🚨 Scadenze imminenti</h4>
+
+    {% for a in alerts %}
+        <div class="alert
+            {% if a.status == 'red' %} alert-danger
+            {% elif a.status == 'yellow' %} alert-warning
+            {% endif %}
+        ">
+            <b>{{ a.vehicle }}</b> - {{ a.description }}
+            ({{ a.days_left }} giorni)
+        </div>
+    {% endfor %}
+
+    <hr>
+
+    <!-- VEICOLI -->
+    <h4>🚗 I tuoi veicoli</h4>
+
+    <div class="row">
+        {% for v in vehicles %}
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ v["name"] }}</h5>
+                    <p class="text-muted">{{ v["plate"] }}</p>
+
+                    <a href="/vehicle/{{ v['id'] }}" class="btn btn-primary btn-sm">
+                        Apri
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <hr>
+
+    <!-- AGGIUNGI VEICOLO -->
+    <h4>➕ Aggiungi veicolo</h4>
+
+    <form method="post" action="/add_vehicle" class="row g-2">
+
+        <div class="col-md-5">
+            <input class="form-control" name="name" placeholder="Nome veicolo">
+        </div>
+
+        <div class="col-md-5">
+            <input class="form-control" name="plate" placeholder="Targa">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-success w-100">Aggiungi</button>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

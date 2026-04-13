@@ -1,0 +1,11 @@
+<h2>✏️ Modifica Scadenza</h2>
+
+<form method="post" action="/update_deadline/{{ deadline['id'] }}/{{ vehicle_id }}">
+
+    <input name="description" value="{{ deadline['description'] }}" required>
+
+    <input name="due_date" type="date" value="{{ deadline['due_date'] }}" required>
+
+    <button>Salva modifiche</button>
+
+</form>

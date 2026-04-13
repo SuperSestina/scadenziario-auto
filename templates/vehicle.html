@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Veicolo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2>🚗 {{ vehicle["name"] }}</h2>
+            <p class="text-muted">Targa: {{ vehicle["plate"] }}</p>
+        </div>
+        <a href="/delete_vehicle/{{ vehicle['id'] }}"
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('Sei sicuro di voler eliminare questo veicolo?');">
+            🗑️ Elimina veicolo
+        </a>
+        <a href="/" class="btn btn-outline-secondary btn-sm">⬅ Home</a>
+    </div>
+
+    <hr>
+
+    <!-- SCADENZE -->
+    <h4>📅 Scadenze</h4>
+
+    {% for d in deadlines %}
+        <div class="alert
+            {% if d.status == 'red' %} alert-danger
+            {% elif d.status == 'yellow' %} alert-warning
+            {% else %} alert-light
+            {% endif %}
+        ">
+            <b>{{ d.description }}</b> - {{ d.due_date }}
+            ({{ d.days_left }} giorni)
+
+            <div class="mt-2">
+                <a href="/edit_deadline/{{ d.id }}/{{ vehicle.id }}" class="btn btn-sm btn-primary">✏️</a>
+                <a href="/delete_deadline/{{ d.id }}/{{ vehicle.id }}" class="btn btn-sm btn-danger">❌</a>
+            </div>
+        </div>
+    {% endfor %}
+
+    <!-- FORM SCADENZE -->
+    <form method="post" action="/add_deadline/{{ vehicle['id'] }}" class="row g-2 mb-4">
+
+        <div class="col-md-8">
+            <input class="form-control" name="description" placeholder="Scadenza (es: Assicurazione)">
+        </div>
+
+        <div class="col-md-4">
+            <input class="form-control" type="date" name="due_date" required>
+        </div>
+
+        <div class="col-12">
+            <button class="btn btn-success w-100">➕ Aggiungi scadenza</button>
+        </div>
+
+    </form>
+
+    <hr>
+
+    <!-- MANUTENZIONI -->
+    <h4>🛠️ Manutenzioni</h4>
+
+    {% for m in maintenances %}
+        <div class="border rounded p-3 mb-2 bg-white shadow-sm">
+
+            <b>{{ m.description }}</b><br>
+
+            💰 {{ m.cost }} €<br>
+            🏭 {{ m.workshop }}<br>
+            📅 {{ m.date }}
+
+            <div class="mt-2">
+                <a href="/edit_maintenance/{{ m.id }}/{{ vehicle.id }}" class="btn btn-sm btn-primary">✏️</a>
+                <a href="/delete_maintenance/{{ m.id }}/{{ vehicle.id }}" class="btn btn-sm btn-danger">❌</a>
+            </div>
+
+        </div>
+    {% endfor %}
+
+    <form method="post" action="/add_maintenance/{{ vehicle['id'] }}" class="row g-2 mb-4">
+
+        <div class="col-md-6">
+            <input class="form-control" name="description" placeholder="Intervento">
+        </div>
+
+        <div class="col-md-3">
+            <input class="form-control" name="cost" placeholder="Costo €">
+        </div>
+
+        <div class="col-md-3">
+            <input class="form-control" name="workshop" placeholder="Officina">
+        </div>
+
+        <div class="col-md-12">
+            <input class="form-control" type="date" name="date" required>
+        </div>
+
+        <div class="col-12">
+            <button class="btn btn-success w-100">➕ Aggiungi manutenzione</button>
+        </div>
+
+    </form>
+
+    <hr>
+
+    <!-- NOTE -->
+    <h4>📝 Note</h4>
+
+    {% for n in notes %}
+        <div class="border p-2 mb-2 bg-white">
+
+            {{ n.content }}<br>
+            <small class="text-muted">{{ n.created_at }}</small>
+
+            <div class="mt-2">
+                <a href="/edit_note/{{ n.id }}/{{ vehicle.id }}" class="btn btn-sm btn-primary">✏️</a>
+                <a href="/delete_note/{{ n.id }}/{{ vehicle.id }}" class="btn btn-sm btn-danger">❌</a>
+            </div>
+
+        </div>
+    {% endfor %}
+
+    <form method="post" action="/add_note/{{ vehicle['id'] }}" class="mb-4">
+
+        <input class="form-control mb-2" name="content" placeholder="Nuova nota">
+
+        <button class="btn btn-success w-100">➕ Aggiungi nota</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>
