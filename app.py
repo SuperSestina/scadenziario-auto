@@ -3,6 +3,8 @@ import database
 from werkzeug.security import check_password_hash
 from datetime import datetime
 import pdfkit
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 from flask import make_response
 
 config = pdfkit.configuration(
@@ -394,23 +396,58 @@ def vehicle_pdf(vehicle_id):
     maintenances = database.get_maintenances(vehicle_id)
     notes = database.get_notes(vehicle_id)
 
-    rendered = render_template(
-        "vehicle_pdf.html",
-        vehicle=vehicle,
-        deadlines=deadlines,
-        maintenances=maintenances,
-        notes=notes
-    )
-
-    config = pdfkit.configuration(
-        wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
-    )
-
-    pdf = pdfkit.from_string(rendered, False, configuration=config)
-
-    response = make_response(pdf)
+    response = make_response()
     response.headers["Content-Type"] = "application/pdf"
     response.headers["Content-Disposition"] = "inline; filename=scheda_veicolo.pdf"
+
+    c = canvas.Canvas(response, pagesize=A4)
+
+    y = 800
+
+    # Titolo
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(50, y, f"Veicolo: {vehicle['name']}")
+    y -= 20
+    c.setFont("Helvetica", 12)
+    c.drawString(50, y, f"Targa: {vehicle['plate']}")
+
+    y -= 30
+
+    # Scadenze
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y, "Scadenze:")
+    y -= 20
+
+    c.setFont("Helvetica", 10)
+    for d in deadlines:
+        c.drawString(60, y, f"- {d['description']} ({d['due_date']})")
+        y -= 15
+
+    y -= 20
+
+    # Manutenzioni
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y, "Manutenzioni:")
+    y -= 20
+
+    c.setFont("Helvetica", 10)
+    for m in maintenances:
+        c.drawString(60, y, f"- {m['description']} - {m['cost']}€ ({m['date']})")
+        y -= 15
+
+    y -= 20
+
+    # Note
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y, "Note:")
+    y -= 20
+
+    c.setFont("Helvetica", 10)
+    for n in notes:
+        c.drawString(60, y, f"- {n['content']}")
+        y -= 15
+
+    c.save()
 
     return response
 
