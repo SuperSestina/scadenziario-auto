@@ -6,6 +6,8 @@ import pdfkit
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from flask import make_response
+import io
+
 
 config = pdfkit.configuration(
     wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
@@ -396,11 +398,10 @@ def vehicle_pdf(vehicle_id):
     maintenances = database.get_maintenances(vehicle_id)
     notes = database.get_notes(vehicle_id)
 
-    response = make_response()
-    response.headers["Content-Type"] = "application/pdf"
-    response.headers["Content-Disposition"] = "inline; filename=scheda_veicolo.pdf"
+    # ✅ buffer in memoria
+    buffer = io.BytesIO()
 
-    c = canvas.Canvas(response, pagesize=A4)
+    c = canvas.Canvas(buffer, pagesize=A4)
 
     y = 800
 
@@ -448,6 +449,14 @@ def vehicle_pdf(vehicle_id):
         y -= 15
 
     c.save()
+
+    # ✅ torna all'inizio del buffer
+    buffer.seek(0)
+
+    # ✅ crea response corretta
+    response = make_response(buffer.read())
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = "inline; filename=scheda_veicolo.pdf"
 
     return response
 
