@@ -2,6 +2,12 @@ from flask import Flask, render_template, request, redirect, session
 import database
 from werkzeug.security import check_password_hash
 from datetime import datetime
+import pdfkit
+from flask import make_response
+
+config = pdfkit.configuration(
+    wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
+)
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
@@ -377,6 +383,36 @@ def update_note(note_id, vehicle_id):
     conn.close()
 
     return redirect(f"/vehicle/{vehicle_id}")
+
+@app.route("/vehicle_pdf/<int:vehicle_id>")
+def vehicle_pdf(vehicle_id):
+    if "user_id" not in session:
+        return redirect("/login")
+
+    vehicle = database.get_vehicle(vehicle_id)
+    deadlines = database.get_deadlines(vehicle_id)
+    maintenances = database.get_maintenances(vehicle_id)
+    notes = database.get_notes(vehicle_id)
+
+    rendered = render_template(
+        "vehicle_pdf.html",
+        vehicle=vehicle,
+        deadlines=deadlines,
+        maintenances=maintenances,
+        notes=notes
+    )
+
+    config = pdfkit.configuration(
+        wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
+    )
+
+    pdf = pdfkit.from_string(rendered, False, configuration=config)
+
+    response = make_response(pdf)
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = "inline; filename=scheda_veicolo.pdf"
+
+    return response
 
 
 

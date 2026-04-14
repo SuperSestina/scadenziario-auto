@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial; }
+        h1 { color: #333; }
+        .section { margin-bottom: 20px; }
+    </style>
+</head>
+
+<body>
+
+<h1>🚗 {{ vehicle["name"] }}</h1>
+<p><b>Targa:</b> {{ vehicle["plate"] }}</p>
+
+<div class="section">
+    <h2>📅 Scadenze</h2>
+    <ul>
+        {% for d in deadlines %}
+            <li>{{ d.description }} - {{ d.due_date }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="section">
+    <h2>🛠️ Manutenzioni</h2>
+    <ul>
+        {% for m in maintenances %}
+            <li>{{ m.description }} - {{ m.cost }}€ ({{ m.date }})</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="section">
+    <h2>📝 Note</h2>
+    <ul>
+        {% for n in notes %}
+            <li>{{ n.content }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+</body>
+</html>

@@ -277,3 +277,44 @@ def delete_vehicle(vehicle_id):
 
     conn.commit()
     conn.close()
+
+def get_vehicle(vehicle_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM vehicles WHERE id = ?", (vehicle_id,))
+    vehicle = cursor.fetchone()
+
+    conn.close()
+    return vehicle
+
+def get_deadlines(vehicle_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM deadlines WHERE vehicle_id = ?", (vehicle_id,))
+    data = cursor.fetchall()
+
+    conn.close()
+    return data
+
+def get_maintenances(vehicle_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM maintenances WHERE vehicle_id = ?", (vehicle_id,))
+    data = cursor.fetchall()
+
+    conn.close()
+    return data
+
+def get_notes(vehicle_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM notes WHERE vehicle_id = ?", (vehicle_id,))
+    data = cursor.fetchall()
+
+    conn.close()
+    return data
+
