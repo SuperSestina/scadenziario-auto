@@ -18,7 +18,12 @@
     <h2>📅 Scadenze</h2>
     <ul>
         {% for d in deadlines %}
-            <li>{{ d.description }} - {{ d.due_date }}</li>
+            <li>
+                {{ d.description }}
+                {% if d.due_date %}
+                    - {{ d.due_date }}
+                {% endif %}
+            </li>
         {% endfor %}
     </ul>
 </div>
@@ -27,8 +32,18 @@
     <h2>🛠️ Manutenzioni</h2>
     <ul>
         {% for m in maintenances %}
-            <li>{{ m.description }} - {{ m.cost }}€ ({{ m.date }})</li>
-        {% endfor %}
+             <li>
+                {{ m.description }}
+
+                {% if m.cost %}
+                    - {{ m.cost }}€
+                {% endif %}
+
+                {% if m.date %}
+                    ({{ m.date }})
+                {% endif %}
+            </li>
+        {% endfor %}}
     </ul>
 </div>
 
@@ -36,7 +51,9 @@
     <h2>📝 Note</h2>
     <ul>
         {% for n in notes %}
-            <li>{{ n.content }}</li>
+            <li>
+                {{ n.content }}
+            </li>
         {% endfor %}
     </ul>
 </div>

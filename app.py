@@ -421,7 +421,12 @@ def vehicle_pdf(vehicle_id):
 
     c.setFont("Helvetica", 10)
     for d in deadlines:
-        c.drawString(60, y, f"- {d['description']} ({d['due_date']})")
+        if d["due_date"]:
+            text = f"- {d['description']} ({d['due_date']})"
+        else:
+            text = f"{d['description']}"
+
+        c.drawString(60, y, text)
         y -= 15
 
     y -= 20
