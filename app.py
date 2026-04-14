@@ -2,16 +2,11 @@ from flask import Flask, render_template, request, redirect, session
 import database
 from werkzeug.security import check_password_hash
 from datetime import datetime
-import pdfkit
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from flask import make_response
 import io
 
-
-config = pdfkit.configuration(
-    wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
-)
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
