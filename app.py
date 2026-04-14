@@ -8,7 +8,7 @@ from flask import make_response
 import io
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 app.secret_key = "supersecretkey"
 
 database.init_db()
